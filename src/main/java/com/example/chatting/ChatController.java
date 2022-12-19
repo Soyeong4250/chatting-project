@@ -3,6 +3,7 @@ package com.example.chatting;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -33,8 +34,18 @@ public class ChatController {
 
         chatMessageList.add(message);
 
-        return new RsData("S-1",
+        return new RsData<>("S-1",
                 "메세지가 작성되었습니다.",
                 message);
+    }
+
+    @GetMapping("/message")
+    @ResponseBody
+    public RsData<List <ChatMessage>> message() {
+        return new RsData<>(
+                "S-1",
+                "Success",
+                chatMessageList
+        );
     }
 }
