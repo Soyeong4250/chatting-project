@@ -14,6 +14,14 @@ public class ChatMessage {
     private String content;
 
     public ChatMessage(String author, String content) {
-        this(1, LocalDateTime.now(), author, content);
+        this(ChatMessageIdGenerator.genNextId(), LocalDateTime.now(), author, content);
+    }
+
+}
+class ChatMessageIdGenerator {
+    public static long id = 0;
+
+    public static long genNextId() {
+        return ++id;
     }
 }
