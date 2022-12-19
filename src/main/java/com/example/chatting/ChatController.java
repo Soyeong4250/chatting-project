@@ -2,6 +2,7 @@ package com.example.chatting;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@Slf4j
 @RequestMapping("/chat")
 public class ChatController {
 
@@ -42,13 +44,19 @@ public class ChatController {
                 new WriteMessageResponse(message.getId()));
     }
 
+    @AllArgsConstructor
+    @Getter
+    public static class MessagesResponse {
+        private final List<ChatMessage> chatMessageList;
+        private final int size;
+    }
+
     @GetMapping("/message")
     @ResponseBody
-    public RsData<List <ChatMessage>> message() {
+    public RsData<MessagesResponse> message() {
         return new RsData<>(
                 "S-1",
                 "Success",
-                chatMessageList
-        );
+                new MessagesResponse(chatMessageList, chatMessageList.size()));
     }
 }
