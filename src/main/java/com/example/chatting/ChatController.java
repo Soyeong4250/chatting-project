@@ -3,10 +3,7 @@ package com.example.chatting;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +16,7 @@ public class ChatController {
 
     @AllArgsConstructor
     @Getter
-    public static class writeMessageResponse {
+    public static class WriteMessageResponse {
         private final long id;
     }
 
@@ -27,16 +24,22 @@ public class ChatController {
     /*public record WriteMessageResponse(long id){
     }*/
 
+    @AllArgsConstructor
+    @Getter
+    public static class WriteMessageRequest {
+        private final String author;
+        private final String content;
+    }
     @PostMapping("/writeMessage")
     @ResponseBody
-    public RsData<ChatMessage> writeMessage() {
-        ChatMessage message = new ChatMessage("홍길동", "안녕하세요.");
+    public RsData<WriteMessageResponse> writeMessage(@RequestBody WriteMessageRequest req) {
+        ChatMessage message = new ChatMessage(req.author, req.content);
 
         chatMessageList.add(message);
 
         return new RsData<>("S-1",
                 "메세지가 작성되었습니다.",
-                message);
+                new WriteMessageResponse(message.getId()));
     }
 
     @GetMapping("/message")
