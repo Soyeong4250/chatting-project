@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 @Controller
 @Slf4j
@@ -46,6 +47,12 @@ public class ChatController {
 
     @AllArgsConstructor
     @Getter
+    public static class MessagesRequest {
+        private final Long fromId;
+    }
+
+    @AllArgsConstructor
+    @Getter
     public static class MessagesResponse {
         private final List<ChatMessage> chatMessageList;
         private final int size;
@@ -53,10 +60,25 @@ public class ChatController {
 
     @GetMapping("/message")
     @ResponseBody
-    public RsData<MessagesResponse> message() {
+    public RsData<MessagesResponse> message(MessagesRequest req) {
+        log.debug("req : {}",  req);
+
+        List<ChatMessage> messages = chatMessageList;
+
+        if(req.fromId != null) {
+            int idx = IntStream.range(0, messages.size())
+                    .filter(i -> chatMessageList.get(i).getId() == req.fromId)
+                    .findFirst()
+                    .orElse(-1);
+
+            if(idx != -1) {
+                messages = messages.subList(idx + 1, messages.size());
+            }
+        }
+
         return new RsData<>(
                 "S-1",
                 "Success",
-                new MessagesResponse(chatMessageList, chatMessageList.size()));
+                new MessagesResponse(messages, messages.size()));
     }
 }
